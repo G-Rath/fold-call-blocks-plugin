@@ -1,0 +1,20 @@
+plugins {
+  id 'org.jetbrains.intellij' version '0.4.8'
+}
+
+group 'jones.foldtestblocks'
+version '0.0.0'
+
+apply plugin: 'org.jetbrains.intellij'
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+  type = 'IU'
+  version '2019.1.2'
+  plugins = ['JavaScriptLanguage']
+}
+patchPluginXml {
+  changeNotes """
+    0.0.0 - Initial release.
+    """
+}
