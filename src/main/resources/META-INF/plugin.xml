@@ -1,0 +1,17 @@
+<idea-plugin>
+  <id>jones.foldtestblocks.fold-test-blocks</id>
+  <name>Fold Test Blocks</name>
+  <vendor>Gareth Jones</vendor>
+
+  <depends>com.intellij.modules.lang</depends>
+  <depends>JavaScript</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
+  </extensions>
+
+  <actions />
+</idea-plugin>
