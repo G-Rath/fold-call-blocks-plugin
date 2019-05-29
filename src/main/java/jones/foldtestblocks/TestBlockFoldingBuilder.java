@@ -141,15 +141,19 @@ public class TestBlockFoldingBuilder implements FoldingBuilder
             .orElse(null)
     );
 
-    if(jsExpression != null) {
-      String stringValue = jsExpression.getStringValue();
-
-      if(stringValue != null) {
-        return stringValue;
-      }
+    if(jsExpression == null) {
+      return callExpression.getText();
     }
 
-    return callExpression.getText();
+    String stringValue = jsExpression.getStringValue();
+
+    if(stringValue != null) {
+      return stringValue;
+    }
+
+    String textValue = jsExpression.getText();
+
+    return textValue.substring(1, jsExpression.getText().length() - 1);
   }
 
   private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range)
