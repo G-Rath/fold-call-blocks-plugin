@@ -147,6 +147,10 @@ public class TestBlockFoldingBuilder implements FoldingBuilder
       if(stringValue != null) {
         return stringValue;
       }
+
+      String textValue = jsExpression.getText();
+
+      return textValue.substring(1, jsExpression.getText().length() - 1);
     }
 
     return callExpression.getText();
