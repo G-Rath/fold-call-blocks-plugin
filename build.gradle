@@ -10,7 +10,7 @@ apply plugin: 'org.jetbrains.intellij'
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
   type = 'IU'
-  version '2019.1.2'
+  version '2019.1.3'
   plugins = ['JavaScriptLanguage']
 }
 patchPluginXml {
