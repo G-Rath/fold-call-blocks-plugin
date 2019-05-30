@@ -11,7 +11,7 @@ apply plugin: 'org.jetbrains.intellij'
 intellij {
   type = 'IU'
   version '2019.1.3'
-  plugins = ['JavaScriptLanguage']
+  plugins = ['JavaScriptLanguage', 'org.jetbrains.plugins.ruby:2019.1.20190528']
 }
 patchPluginXml {
   pluginDescription """
