@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 // todo: should we be extending FoldingBuilderEx instead?
-public class TestBlockFoldingBuilder implements FoldingBuilder
+public class JSTestBlockFoldingBuilder implements FoldingBuilder
 {
-  private static final Logger LOG = Logger.getInstance(TestBlockFoldingBuilder.class);
+  private static final Logger LOG = Logger.getInstance(JSTestBlockFoldingBuilder.class);
   private static final String[] testBlockNames = {
     "describe",
     "test",
@@ -71,7 +71,7 @@ public class TestBlockFoldingBuilder implements FoldingBuilder
       return false;
     }
 
-    return Arrays.asList(TestBlockFoldingBuilder.testBlockNames).contains(methodExpression.getText());
+    return Arrays.asList(JSTestBlockFoldingBuilder.testBlockNames).contains(methodExpression.getText());
   }
 
   /**

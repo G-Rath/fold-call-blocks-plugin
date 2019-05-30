@@ -4,13 +4,16 @@
   <vendor>Gareth Jones</vendor>
 
   <depends>com.intellij.modules.lang</depends>
+  <depends>org.jetbrains.plugins.ruby</depends>
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.TestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
+
+    <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyTestBlockFoldingBuilder" />
   </extensions>
 
   <actions />
