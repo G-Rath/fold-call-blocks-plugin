@@ -4,6 +4,7 @@
   <vendor>Gareth Jones</vendor>
 
   <depends>com.intellij.modules.lang</depends>
+  <depends>org.jetbrains.plugins.ruby</depends>
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
