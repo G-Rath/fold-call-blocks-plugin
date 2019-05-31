@@ -49,7 +49,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
                  .stream()
                  .filter(this::isTestBlockCallExpression)
                  .filter(this::shouldFoldTestBlockCallExpression)
-                 .map(this::createFoldingDescriptor)
+                 .map(callExpression -> createFoldingDescriptor(callExpression, document))
                  .toArray(FoldingDescriptor[]::new)
     );
   }
@@ -127,7 +127,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpressionImpl callExpression)
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpressionImpl callExpression, @NotNull Document document)
   {
     // JavaCodeFoldingSettings.getInstance().isCollapseEndOfLineComments()
     PsiElement expressionParent = callExpression.getParent();
