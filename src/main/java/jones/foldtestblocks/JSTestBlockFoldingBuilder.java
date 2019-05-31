@@ -55,6 +55,24 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
   }
 
   /**
+   * Checks if the given {@code expression} is a {@code CallExpression} for a "test block".
+   * <p>
+   * A "test block" call expression is one whose text is in the list of {@code testBlockNames}.
+   *
+   * @param expression the expression to check
+   *
+   * @return {@code true} if the given {@code expression} is for a "test block"; otherwise {@code false}
+   */
+  private boolean isTestBlockCallExpression(@Nullable JSExpression expression)
+  {
+    if(expression instanceof JSCallExpressionImpl) {
+      return isTestBlockCallExpression((JSCallExpressionImpl) expression);
+    }
+
+    return false;
+  }
+
+  /**
    * Checks if the given {@code callExpression} is for a "test block".
    * <p>
    * A "test block" call expression is one whose text is in the list of {@code testBlockNames}.
