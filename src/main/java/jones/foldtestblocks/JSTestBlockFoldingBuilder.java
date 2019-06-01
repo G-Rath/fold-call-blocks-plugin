@@ -22,8 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 // todo: should we be extending FoldingBuilderEx instead?
-public class JSTestBlockFoldingBuilder implements FoldingBuilder
-{
+public class JSTestBlockFoldingBuilder implements FoldingBuilder {
   private static final Logger LOG = Logger.getInstance(JSTestBlockFoldingBuilder.class);
   private static final String[] testBlockNames = {
     "describe",
@@ -33,8 +32,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
 
   @NotNull
   @Override
-  public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document)
-  {
+  public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
     PsiElement nodePsi = node.getPsi();
 //    PsiElement nodePsiNextSibling = nodePsi.getNextSibling();
 //
@@ -65,8 +63,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code expression} is for a "test block"; otherwise {@code false}
    */
-  private boolean isTestBlockCallExpression(@Nullable JSExpression expression)
-  {
+  private boolean isTestBlockCallExpression(@Nullable JSExpression expression) {
     if(expression instanceof JSCallExpression) {
       return isTestBlockCallExpression((JSCallExpression) expression);
     }
@@ -83,8 +80,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code callExpression} is for a "test block"; otherwise {@code false}
    */
-  private boolean isTestBlockCallExpression(@NotNull JSCallExpression callExpression)
-  {
+  private boolean isTestBlockCallExpression(@NotNull JSCallExpression callExpression) {
     JSExpression methodExpression = callExpression.getMethodExpression();
 
     if(methodExpression == null) {
@@ -103,8 +99,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code testBlockCallExp} should be folded; otherwise {@code false}
    */
-  private boolean shouldFoldTestBlockCallExpression(@NotNull JSCallExpression testBlockCallExp)
-  {
+  private boolean shouldFoldTestBlockCallExpression(@NotNull JSCallExpression testBlockCallExp) {
     /*
       if "fold top level blocks" is false
         then fold testBlockCallExp if it's not a top most call expression
@@ -123,14 +118,12 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code testBlockCallExp} is the top most call expression; otherwise {@code false}
    */
-  private boolean isTopMostCallExpression(@NotNull JSCallExpression callExpression)
-  {
+  private boolean isTopMostCallExpression(@NotNull JSCallExpression callExpression) {
     return callExpression.getParent().getParent() instanceof PsiFile;
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpression callExpression, @NotNull Document document)
-  {
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpression callExpression, @NotNull Document document) {
     // JavaCodeFoldingSettings.getInstance().isCollapseEndOfLineComments()
     PsiElement expressionParent = callExpression.getParent();
 
@@ -152,8 +145,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    * @return the next `JSCallExpression` considered to be a test block, or `null` if there isn't one
    */
   @Nullable
-  private JSCallExpression findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression)
-  {
+  private JSCallExpression findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression) {
     for(PsiElement sibling = callExpression.getParent().getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
       if(sibling instanceof PsiWhiteSpace) {
         continue; // ignore whitespace
@@ -181,8 +173,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return the `TextRange` to fold over
    */
-  private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression, @NotNull Document document)
-  {
+  private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression, @NotNull Document document) {
     TextRange range = callExpression.getParent().getTextRange();
 
     JSCallExpression nextTestBlockSibling = findImmediateNextTestBlockSibling(callExpression);
@@ -217,8 +208,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return the placeholder text to use when folding the given {@code callExpression}
    */
-  private String buildPlaceholderText(@NotNull JSCallExpression callExpression)
-  {
+  private String buildPlaceholderText(@NotNull JSCallExpression callExpression) {
     JSExpression firstCallArgument = callExpression.getArguments()[0];
 
     if(!(firstCallArgument instanceof JSLiteralExpression)) {
@@ -236,8 +226,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
     return textValue.substring(1, textValue.length() - 1);
   }
 
-  private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range)
-  {
+  private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range) {
     /*
     TextRange range = expressionParent.getTextRange();
     TextRange textRange = new TextRange(findOffsetOfLineForTextRange(document, range), range.getEndOffset());
@@ -247,14 +236,12 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
 
   @Nullable
   @Override
-  public String getPlaceholderText(@NotNull ASTNode node)
-  {
+  public String getPlaceholderText(@NotNull ASTNode node) {
     return null;
   }
 
   @Override
-  public boolean isCollapsedByDefault(@NotNull ASTNode node)
-  {
+  public boolean isCollapsedByDefault(@NotNull ASTNode node) {
     /*
       if "collapse by default setting" is false
         then return false
