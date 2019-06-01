@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.RPsiElement;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.expressions.RLiteral;
-import org.jetbrains.plugins.ruby.ruby.lang.psi.methodCall.RCall;
+import org.jetbrains.plugins.ruby.ruby.lang.psi.iterators.RBlockCall;
 
 import java.util.Arrays;
 
@@ -29,75 +29,73 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
     PsiElement nodePsi = node.getPsi();
 
     return (
-      PsiTreeUtil.findChildrenOfType(nodePsi, RCall.class)
+      PsiTreeUtil.findChildrenOfType(nodePsi, RBlockCall.class)
                  .stream()
-                 .filter(this::isTestBlockRCall)
-                 .filter(this::shouldFoldTestBlockRCall)
+                 .filter(this::isTestBlockCall)
+                 .filter(this::shouldFoldTestBlockCall)
                  .map(this::createFoldingDescriptor)
                  .toArray(FoldingDescriptor[]::new)
     );
   }
 
   /**
-   * Checks if the given {@code rCall} is for a "test block".
+   * Checks if the given {@code blockCall} is for a "test block".
    * <p>
-   * A "test block" r call is one whose command is in the list of {@code testBlockCommands}.
+   * A "test block" call is one whose command is in the list of {@code testBlockCommands}.
    *
-   * @param rCall the r call to check
+   * @param blockCall the block call to check
    *
-   * @return {@code true} if the given {@code rCall} is for a "test block"; otherwise {@code false}
+   * @return {@code true} if the given {@code blockCall} is for a "test block"; otherwise {@code false}
    */
-  private boolean isTestBlockRCall(@NotNull RCall rCall) {
-    return Arrays.asList(RubyTestBlockFoldingBuilder.testBlockCommands).contains(rCall.getCommand());
+  private boolean isTestBlockCall(@NotNull RBlockCall blockCall) {
+    return Arrays.asList(RubyTestBlockFoldingBuilder.testBlockCommands).contains(blockCall.getCommand());
   }
 
   /**
-   * Checks if the given {@code rCall} should be folded.
+   * Checks if the given {@code blockCall} should be folded.
    * <p>
    * Test block call expressions should be folded unless they're at the top of the tree.
    *
-   * @param rCall the call expression block to check
+   * @param blockCall the call expression block to check
    *
-   * @return {@code true} if the given {@code rCall} should be folded; otherwise {@code false}
+   * @return {@code true} if the given {@code blockCall} should be folded; otherwise {@code false}
    */
-  private boolean shouldFoldTestBlockRCall(@NotNull RCall rCall) {
+  private boolean shouldFoldTestBlockCall(@NotNull RBlockCall blockCall) {
     /*
       if "fold top level blocks" is false
-        then fold rCall if it's not a top most call expression
+        then fold blockCall if it's not a top most call expression
 
-      > return foldTopLevelBlocks || !isTopMostCallExpression(rCall)
+      > return foldTopLevelBlocks || !isTopMostCallExpression(blockCall)
     */
 
     return true;
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RCall rCall) {
-    PsiElement expressionParent = rCall.getParent();
-
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall) {
     return new NamedFoldingDescriptor(
-      expressionParent.getNode(),
-      expressionParent.getTextRange(),
+      blockCall.getNode(),
+      blockCall.getTextRange(),
       null,
-      buildPlaceholderText(rCall)
+      buildPlaceholderText(blockCall)
     );
   }
 
   /**
-   * Builds the placeholder text to use when folding the given {@code rCall}.
+   * Builds the placeholder text to use when folding the given {@code blockCall}.
    *
-   * @param rCall the RCall being folded
+   * @param blockCall the {@code RBlockCall} being folded
    *
-   * @return the placeholder text to use when folding the given {@code rCall}
+   * @return the placeholder text to use when folding the given {@code blockCall}
    */
-  private String buildPlaceholderText(@NotNull RCall rCall) {
-    RPsiElement firstCallArgument = rCall.getArguments().get(0);
+  private String buildPlaceholderText(@NotNull RBlockCall blockCall) {
+    RPsiElement firstCallArgument = blockCall.getArguments().get(0);
 
     if(firstCallArgument instanceof RLiteral) {
       return ((RLiteral) firstCallArgument).getContent();
     }
 
-    return rCall.getText();
+    return blockCall.getText();
   }
 
   @Nullable
@@ -110,8 +108,8 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
   public boolean isCollapsedByDefault(@NotNull ASTNode node) {
     PsiElement psiElement = node.getPsi();
 
-    if(psiElement instanceof RCall) {
-      return shouldFoldTestBlockRCall((RCall) psiElement);
+    if(psiElement instanceof RBlockCall) {
+      return shouldFoldTestBlockCall((RBlockCall) psiElement);
     }
 
     return true;
