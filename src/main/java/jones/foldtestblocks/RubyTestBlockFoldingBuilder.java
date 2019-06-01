@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.RPsiElement;
-import org.jetbrains.plugins.ruby.ruby.lang.psi.basicTypes.stringLiterals.RStrings;
+import org.jetbrains.plugins.ruby.ruby.lang.psi.expressions.RLiteral;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.methodCall.RCall;
 
 import java.util.Arrays;
@@ -97,27 +97,27 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
    */
   private String buildPlaceholderText(@NotNull RCall rCall)
   {
-    RStrings rString = (
+    RLiteral rLiteral = (
       Arrays.stream(rCall.getCallArguments().getElements().toArray(new RPsiElement[0]))
-            .filter(expression -> expression instanceof RStrings)
-            .map(rStrings -> (RStrings) rStrings)
+            .filter(expression -> expression instanceof RLiteral)
+            .map(element -> (RLiteral) element)
             .findFirst()
             .orElse(null)
     );
 
-    if(rString == null) {
+    if(rLiteral == null) {
       return rCall.getText();
     }
 
-    String stringValue = rString.getContent();
+    String stringValue = rLiteral.getContent();
 
     if(stringValue != null) {
       return stringValue;
     }
 
-    String textValue = rString.getText();
+    String textValue = rLiteral.getText();
 
-    return textValue.substring(1, rString.getText().length() - 1);
+    return textValue.substring(1, rLiteral.getText().length() - 1);
   }
 
   @Nullable
