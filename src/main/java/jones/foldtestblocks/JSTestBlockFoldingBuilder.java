@@ -8,7 +8,6 @@ import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSExpressionStatement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
-import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
@@ -39,8 +38,8 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
     PsiElement nodePsi = node.getPsi();
 //    PsiElement nodePsiNextSibling = nodePsi.getNextSibling();
 //
-//    if(nodePsiNextSibling instanceof JSCallExpressionImpl) {
-//      JSCallExpressionImpl callExpression = (JSCallExpressionImpl) nodePsiNextSibling;
+//    if(nodePsiNextSibling instanceof JSCallExpression) {
+//      JSCallExpression callExpression = (JSCallExpression) nodePsiNextSibling;
 //
 //      if(isTestBlockCallExpression(callExpression) && shouldFoldTestBlockCallExpression(callExpression)) {
 //        return new NamedFoldingDescriptor[]{ createFoldingDescriptor(document, callExpression) };
@@ -48,7 +47,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
 //    }
 
     return (
-      PsiTreeUtil.findChildrenOfType(nodePsi, JSCallExpressionImpl.class)
+      PsiTreeUtil.findChildrenOfType(nodePsi, JSCallExpression.class)
                  .stream()
                  .filter(this::isTestBlockCallExpression)
                  .filter(this::shouldFoldTestBlockCallExpression)
@@ -68,8 +67,8 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    */
   private boolean isTestBlockCallExpression(@Nullable JSExpression expression)
   {
-    if(expression instanceof JSCallExpressionImpl) {
-      return isTestBlockCallExpression((JSCallExpressionImpl) expression);
+    if(expression instanceof JSCallExpression) {
+      return isTestBlockCallExpression((JSCallExpression) expression);
     }
 
     return false;
@@ -84,7 +83,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code callExpression} is for a "test block"; otherwise {@code false}
    */
-  private boolean isTestBlockCallExpression(@NotNull JSCallExpressionImpl callExpression)
+  private boolean isTestBlockCallExpression(@NotNull JSCallExpression callExpression)
   {
     JSExpression methodExpression = callExpression.getMethodExpression();
 
@@ -104,7 +103,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code testBlockCallExp} should be folded; otherwise {@code false}
    */
-  private boolean shouldFoldTestBlockCallExpression(@NotNull JSCallExpressionImpl testBlockCallExp)
+  private boolean shouldFoldTestBlockCallExpression(@NotNull JSCallExpression testBlockCallExp)
   {
     /*
       if "fold top level blocks" is false
@@ -124,13 +123,13 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code testBlockCallExp} is the top most call expression; otherwise {@code false}
    */
-  private boolean isTopMostCallExpression(@NotNull JSCallExpressionImpl callExpression)
+  private boolean isTopMostCallExpression(@NotNull JSCallExpression callExpression)
   {
     return callExpression.getParent().getParent() instanceof PsiFile;
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpressionImpl callExpression, @NotNull Document document)
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpression callExpression, @NotNull Document document)
   {
     // JavaCodeFoldingSettings.getInstance().isCollapseEndOfLineComments()
     PsiElement expressionParent = callExpression.getParent();
@@ -153,7 +152,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    * @return the next `JSCallExpression` considered to be a test block, or `null` if there isn't one
    */
   @Nullable
-  private JSCallExpressionImpl findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression)
+  private JSCallExpression findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression)
   {
     for(PsiElement sibling = callExpression.getParent().getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
       if(sibling instanceof PsiWhiteSpace) {
@@ -167,7 +166,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
       JSExpression expression = ((JSExpressionStatement) sibling).getExpression();
 
       if(isTestBlockCallExpression(expression)) {
-        return (JSCallExpressionImpl) expression;
+        return (JSCallExpression) expression;
       }
     }
 
@@ -214,7 +213,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return the placeholder text to use when folding the given {@code callExpression}
    */
-  private String buildPlaceholderText(@NotNull JSCallExpressionImpl callExpression)
+  private String buildPlaceholderText(@NotNull JSCallExpression callExpression)
   {
     JSExpression firstCallArgument = callExpression.getArguments()[0];
 
@@ -259,8 +258,8 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
 
     PsiElement psiElement = node.getPsi();
 
-    if(psiElement instanceof JSCallExpressionImpl) {
-      return shouldFoldTestBlockCallExpression((JSCallExpressionImpl) psiElement);
+    if(psiElement instanceof JSCallExpression) {
+      return shouldFoldTestBlockCallExpression((JSCallExpression) psiElement);
     }
 
     return true;
