@@ -4,7 +4,9 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.folding.NamedFoldingDescriptor;
+import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
+import com.intellij.lang.javascript.psi.JSExpressionStatement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
 import com.intellij.lang.javascript.psi.impl.JSCallExpressionImpl;
 import com.intellij.openapi.diagnostic.Logger;
@@ -13,6 +15,7 @@ import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,9 +52,27 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
                  .stream()
                  .filter(this::isTestBlockCallExpression)
                  .filter(this::shouldFoldTestBlockCallExpression)
-                 .map(this::createFoldingDescriptor)
+                 .map(callExpression -> createFoldingDescriptor(callExpression, document))
                  .toArray(FoldingDescriptor[]::new)
     );
+  }
+
+  /**
+   * Checks if the given {@code expression} is a {@code CallExpression} for a "test block".
+   * <p>
+   * A "test block" call expression is one whose text is in the list of {@code testBlockNames}.
+   *
+   * @param expression the expression to check
+   *
+   * @return {@code true} if the given {@code expression} is for a "test block"; otherwise {@code false}
+   */
+  private boolean isTestBlockCallExpression(@Nullable JSExpression expression)
+  {
+    if(expression instanceof JSCallExpressionImpl) {
+      return isTestBlockCallExpression((JSCallExpressionImpl) expression);
+    }
+
+    return false;
   }
 
   /**
@@ -109,7 +130,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpressionImpl callExpression)
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpressionImpl callExpression, @NotNull Document document)
   {
     // JavaCodeFoldingSettings.getInstance().isCollapseEndOfLineComments()
     PsiElement expressionParent = callExpression.getParent();
@@ -118,9 +139,71 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
 
     return new NamedFoldingDescriptor(
       expressionParent.getNode(),
-      expressionParent.getTextRange(),
+      calculateFoldingTextRange(callExpression, document),
       group, // FoldingGroup.newGroup("Block comment " + comment.getTextRange().toString()),
       buildPlaceholderText(callExpression)
+    );
+  }
+
+  /**
+   * Finds the immediate next sibling of the given `callExpression` that is considered a test block, ignoring whitespace blocks.
+   *
+   * @param callExpression the call expression whose next sibling to find
+   *
+   * @return the next `JSCallExpression` considered to be a test block, or `null` if there isn't one
+   */
+  @Nullable
+  private JSCallExpressionImpl findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression)
+  {
+    for(PsiElement sibling = callExpression.getParent().getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+      if(sibling instanceof PsiWhiteSpace) {
+        continue; // ignore whitespace
+      }
+
+      if(!(sibling instanceof JSExpressionStatement)) {
+        return null;
+      }
+
+      JSExpression expression = ((JSExpressionStatement) sibling).getExpression();
+
+      if(isTestBlockCallExpression(expression)) {
+        return (JSCallExpressionImpl) expression;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Calculates the `TextRange` to use for folding the given `callExpression`.
+   *
+   * @param callExpression the `JSCallExpression` who's `TextRange` to calculate
+   * @param document       the `document` the `callExpression` is in
+   *
+   * @return the `TextRange` to fold over
+   */
+  private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression, @NotNull Document document)
+  {
+    TextRange range = callExpression.getParent().getTextRange();
+
+    JSCallExpression nextTestBlockSibling = findImmediateNextTestBlockSibling(callExpression);
+
+    if(nextTestBlockSibling == null) {
+      return range;
+    }
+
+    JSExpressionStatement nextTestBlockExpression = (JSExpressionStatement) nextTestBlockSibling.getParent();
+
+    // line number that the *start* of the next test block is on
+    int nextTestBlockStartOffset = nextTestBlockExpression.getTextRange().getStartOffset();
+    int nextTestBlockStartLineNum = document.getLineNumber(nextTestBlockStartOffset);
+
+    // offset of the start of the line before the start of the next test block
+    int offsetOfLineBeforeNextTestBlock = document.getLineStartOffset(nextTestBlockStartLineNum - 1);
+
+    return new TextRange(
+      range.getStartOffset(),
+      offsetOfLineBeforeNextTestBlock
     );
   }
 
