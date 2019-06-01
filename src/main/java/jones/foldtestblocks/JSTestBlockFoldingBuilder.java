@@ -216,17 +216,13 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    */
   private String buildPlaceholderText(@NotNull JSCallExpressionImpl callExpression)
   {
-    JSLiteralExpression jsExpression = (
-      Arrays.stream(callExpression.getArguments())
-            .filter(expression -> expression instanceof JSLiteralExpression)
-            .map(expression -> (JSLiteralExpression) expression)
-            .findFirst()
-            .orElse(null)
-    );
+    JSExpression firstCallArgument = callExpression.getArguments()[0];
 
-    if(jsExpression == null) {
+    if(!(firstCallArgument instanceof JSLiteralExpression)) {
       return callExpression.getText();
     }
+
+    JSLiteralExpression jsExpression = (JSLiteralExpression) firstCallArgument;
 
     String stringValue = jsExpression.getStringValue();
 
