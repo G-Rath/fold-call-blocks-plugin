@@ -16,8 +16,7 @@ import org.jetbrains.plugins.ruby.ruby.lang.psi.methodCall.RCall;
 import java.util.Arrays;
 
 // todo: should we be extending FoldingBuilderEx instead?
-public class RubyTestBlockFoldingBuilder implements FoldingBuilder
-{
+public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
   private static final String[] testBlockCommands = {
     "describe",
     "context",
@@ -26,8 +25,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
 
   @NotNull
   @Override
-  public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document)
-  {
+  public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
     PsiElement nodePsi = node.getPsi();
 
     return (
@@ -49,8 +47,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code rCall} is for a "test block"; otherwise {@code false}
    */
-  private boolean isTestBlockRCall(@NotNull RCall rCall)
-  {
+  private boolean isTestBlockRCall(@NotNull RCall rCall) {
     return Arrays.asList(RubyTestBlockFoldingBuilder.testBlockCommands).contains(rCall.getCommand());
   }
 
@@ -63,8 +60,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return {@code true} if the given {@code rCall} should be folded; otherwise {@code false}
    */
-  private boolean shouldFoldTestBlockRCall(@NotNull RCall rCall)
-  {
+  private boolean shouldFoldTestBlockRCall(@NotNull RCall rCall) {
     /*
       if "fold top level blocks" is false
         then fold rCall if it's not a top most call expression
@@ -76,8 +72,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RCall rCall)
-  {
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RCall rCall) {
     PsiElement expressionParent = rCall.getParent();
 
     return new NamedFoldingDescriptor(
@@ -95,8 +90,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
    *
    * @return the placeholder text to use when folding the given {@code rCall}
    */
-  private String buildPlaceholderText(@NotNull RCall rCall)
-  {
+  private String buildPlaceholderText(@NotNull RCall rCall) {
     RPsiElement firstCallArgument = rCall.getArguments().get(0);
 
     if(firstCallArgument instanceof RLiteral) {
@@ -108,14 +102,12 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
 
   @Nullable
   @Override
-  public String getPlaceholderText(@NotNull ASTNode node)
-  {
+  public String getPlaceholderText(@NotNull ASTNode node) {
     return null;
   }
 
   @Override
-  public boolean isCollapsedByDefault(@NotNull ASTNode node)
-  {
+  public boolean isCollapsedByDefault(@NotNull ASTNode node) {
     PsiElement psiElement = node.getPsi();
 
     if(psiElement instanceof RCall) {
