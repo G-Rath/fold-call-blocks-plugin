@@ -200,6 +200,10 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
     // offset of the start of the line before the start of the next test block
     int offsetOfLineBeforeNextTestBlock = document.getLineStartOffset(nextTestBlockStartLineNum - 1);
 
+    if(range.getEndOffset() > offsetOfLineBeforeNextTestBlock) {
+      offsetOfLineBeforeNextTestBlock = range.getEndOffset();
+    }
+
     return new TextRange(
       range.getStartOffset(),
       offsetOfLineBeforeNextTestBlock
