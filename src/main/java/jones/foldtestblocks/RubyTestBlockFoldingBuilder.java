@@ -97,27 +97,13 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
    */
   private String buildPlaceholderText(@NotNull RCall rCall)
   {
-    RLiteral rLiteral = (
-      Arrays.stream(rCall.getCallArguments().getElements().toArray(new RPsiElement[0]))
-            .filter(expression -> expression instanceof RLiteral)
-            .map(element -> (RLiteral) element)
-            .findFirst()
-            .orElse(null)
-    );
+    RPsiElement firstCallArgument = rCall.getArguments().get(0);
 
-    if(rLiteral == null) {
-      return rCall.getText();
+    if(firstCallArgument instanceof RLiteral) {
+      return ((RLiteral) firstCallArgument).getContent();
     }
 
-    String stringValue = rLiteral.getContent();
-
-    if(stringValue != null) {
-      return stringValue;
-    }
-
-    String textValue = rLiteral.getText();
-
-    return textValue.substring(1, rLiteral.getText().length() - 1);
+    return rCall.getText();
   }
 
   @Nullable

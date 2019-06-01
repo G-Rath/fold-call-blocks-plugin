@@ -216,27 +216,21 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
    */
   private String buildPlaceholderText(@NotNull JSCallExpressionImpl callExpression)
   {
-    JSLiteralExpression jsExpression = (
-      Arrays.stream(callExpression.getArguments())
-            .filter(expression -> expression instanceof JSLiteralExpression)
-            .map(expression -> (JSLiteralExpression) expression)
-            .findFirst()
-            .orElse(null)
-    );
+    JSExpression firstCallArgument = callExpression.getArguments()[0];
 
-    if(jsExpression == null) {
+    if(!(firstCallArgument instanceof JSLiteralExpression)) {
       return callExpression.getText();
     }
 
-    String stringValue = jsExpression.getStringValue();
+    String stringValue = ((JSLiteralExpression) firstCallArgument).getStringValue();
 
     if(stringValue != null) {
       return stringValue;
     }
 
-    String textValue = jsExpression.getText();
+    String textValue = firstCallArgument.getText();
 
-    return textValue.substring(1, jsExpression.getText().length() - 1);
+    return textValue.substring(1, textValue.length() - 1);
   }
 
   private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range)
