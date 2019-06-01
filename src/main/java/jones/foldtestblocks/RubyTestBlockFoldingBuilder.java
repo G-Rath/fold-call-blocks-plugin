@@ -99,21 +99,11 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder
   {
     RPsiElement firstCallArgument = rCall.getArguments().get(0);
 
-    if(!(firstCallArgument instanceof RLiteral)) {
-      return rCall.getText();
+    if(firstCallArgument instanceof RLiteral) {
+      return ((RLiteral) firstCallArgument).getContent();
     }
 
-    RLiteral rLiteral = (RLiteral) firstCallArgument;
-
-    String stringValue = rLiteral.getContent();
-
-    if(stringValue != null) {
-      return stringValue;
-    }
-
-    String textValue = rLiteral.getText();
-
-    return textValue.substring(1, rLiteral.getText().length() - 1);
+    return rCall.getText();
   }
 
   @Nullable
