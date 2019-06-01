@@ -222,17 +222,15 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder
       return callExpression.getText();
     }
 
-    JSLiteralExpression jsExpression = (JSLiteralExpression) firstCallArgument;
-
-    String stringValue = jsExpression.getStringValue();
+    String stringValue = ((JSLiteralExpression) firstCallArgument).getStringValue();
 
     if(stringValue != null) {
       return stringValue;
     }
 
-    String textValue = jsExpression.getText();
+    String textValue = firstCallArgument.getText();
 
-    return textValue.substring(1, jsExpression.getText().length() - 1);
+    return textValue.substring(1, textValue.length() - 1);
   }
 
   private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range)
