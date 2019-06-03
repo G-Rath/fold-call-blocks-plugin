@@ -33,7 +33,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
                  .stream()
                  .filter(this::isTestBlockCall)
                  .filter(this::shouldFoldTestBlockCall)
-                 .map(this::createFoldingDescriptor)
+                 .map(blockCall -> createFoldingDescriptor(blockCall, document))
                  .toArray(FoldingDescriptor[]::new)
     );
   }
@@ -72,7 +72,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall) {
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall, @NotNull Document document) {
     return new NamedFoldingDescriptor(
       blockCall.getNode(),
       blockCall.getTextRange(),
