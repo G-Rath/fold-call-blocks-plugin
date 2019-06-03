@@ -5,11 +5,16 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.lang.folding.NamedFoldingDescriptor;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.RPsiElement;
+import org.jetbrains.plugins.ruby.ruby.lang.psi.RubyElementType;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.expressions.RLiteral;
 import org.jetbrains.plugins.ruby.ruby.lang.psi.iterators.RBlockCall;
 
@@ -33,7 +38,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
                  .stream()
                  .filter(this::isTestBlockCall)
                  .filter(this::shouldFoldTestBlockCall)
-                 .map(this::createFoldingDescriptor)
+                 .map(blockCall -> createFoldingDescriptor(blockCall, document))
                  .toArray(FoldingDescriptor[]::new)
     );
   }
@@ -72,12 +77,96 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall) {
+  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall, @NotNull Document document) {
     return new NamedFoldingDescriptor(
       blockCall.getNode(),
-      blockCall.getTextRange(),
+      calculateFoldingTextRange(blockCall, document),
       null,
       buildPlaceholderText(blockCall)
+    );
+  }
+
+  private boolean shouldIgnoreSibling(@NotNull PsiElement sibling) {
+    if(sibling instanceof PsiWhiteSpace) {
+      return true;
+    }
+
+    if(sibling instanceof LeafPsiElement) {
+      LeafPsiElement leaf = (LeafPsiElement) sibling;
+
+      IElementType leafElementType = leaf.getElementType();
+
+      if(leafElementType instanceof RubyElementType) {
+        RubyElementType rubyElementType = (RubyElementType) leafElementType;
+
+        /*
+          couldn't find "end of line" type defined anywhere, so using this for now.
+          suspect "2210" is a bad bet to rely on, as it might change if other types are registered.
+         */
+        return rubyElementType.getRealText().equals("end of line") || rubyElementType.getIndex() == 2210;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Finds the immediate next sibling of the given `blockCall` that is considered a test block, ignoring whitespace blocks.
+   *
+   * @param blockCall the call expression whose next sibling to find
+   *
+   * @return the next {@code RBlockCall} considered to be a test block, or {@code null} if there isn't one
+   */
+  @Nullable
+  private RBlockCall findImmediateNextTestBlockSibling(@NotNull RBlockCall blockCall) {
+    for(PsiElement sibling = blockCall.getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
+      if(shouldIgnoreSibling(sibling)) {
+        continue;
+      }
+
+      if(!(sibling instanceof RBlockCall)) {
+        return null;
+      }
+
+      if(isTestBlockCall((RBlockCall) sibling)) {
+        return (RBlockCall) sibling;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Calculates the `TextRange` to use for folding the given `blockCall`.
+   *
+   * @param blockCall the `RBlockCall` who's `TextRange` to calculate
+   * @param document  the `document` the `blockCall` is in
+   *
+   * @return the `TextRange` to fold over
+   */
+  private TextRange calculateFoldingTextRange(@NotNull RBlockCall blockCall, @NotNull Document document) {
+    TextRange range = blockCall.getTextRange();
+
+    RBlockCall nextTestBlockSibling = findImmediateNextTestBlockSibling(blockCall);
+
+    if(nextTestBlockSibling == null) {
+      return range;
+    }
+
+    // line number that the *start* of the next test block is on
+    int nextTestBlockStartOffset = nextTestBlockSibling.getTextRange().getStartOffset();
+    int nextTestBlockStartLineNum = document.getLineNumber(nextTestBlockStartOffset);
+
+    // offset of the start of the line before the start of the next test block
+    int offsetOfLineBeforeNextTestBlock = document.getLineEndOffset(nextTestBlockStartLineNum - 1);
+
+    if(range.getEndOffset() > offsetOfLineBeforeNextTestBlock) {
+      offsetOfLineBeforeNextTestBlock = range.getEndOffset();
+    }
+
+    return new TextRange(
+      range.getStartOffset(),
+      offsetOfLineBeforeNextTestBlock
     );
   }
 
