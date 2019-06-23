@@ -209,7 +209,12 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
    * @return the placeholder text to use when folding the given {@code callExpression}
    */
   private String buildPlaceholderText(@NotNull JSCallExpression callExpression) {
-    JSExpression firstCallArgument = callExpression.getArguments()[0];
+    JSExpression[] callExpressionArguments = callExpression.getArguments();
+    JSExpression firstCallArgument = null;
+
+    if(callExpressionArguments.length > 0) {
+      firstCallArgument = callExpressionArguments[0];
+    }
 
     if(!(firstCallArgument instanceof JSLiteralExpression)) {
       return callExpression.getText();
