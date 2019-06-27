@@ -15,6 +15,7 @@
 
     <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyTestBlockFoldingBuilder" />
 
+    <projectConfigurable instance="jones.foldtestblocks.config.ConfigForm" />
     <projectService serviceImplementation="jones.foldtestblocks.BlockMatchersManager" />
   </extensions>
 
