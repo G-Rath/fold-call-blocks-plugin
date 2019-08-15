@@ -3,7 +3,6 @@ package jones.foldtestblocks;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.lang.folding.NamedFoldingDescriptor;
 import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSExpressionStatement;
@@ -40,7 +39,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
 //      JSCallExpression callExpression = (JSCallExpression) nodePsiNextSibling;
 //
 //      if(isTestBlockCallExpression(callExpression) && shouldFoldTestBlockCallExpression(callExpression)) {
-//        return new NamedFoldingDescriptor[]{ createFoldingDescriptor(document, callExpression) };
+//        return new FoldingDescriptor[]{ createFoldingDescriptor(document, callExpression) };
 //      }
 //    }
 
@@ -123,13 +122,13 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpression callExpression, @NotNull Document document) {
+  private FoldingDescriptor createFoldingDescriptor(@NotNull JSCallExpression callExpression, @NotNull Document document) {
     // JavaCodeFoldingSettings.getInstance().isCollapseEndOfLineComments()
     PsiElement expressionParent = callExpression.getParent();
 
     FoldingGroup group = FoldingGroup.newGroup("test-block");
 
-    return new NamedFoldingDescriptor(
+    return new FoldingDescriptor(
       expressionParent.getNode(),
       calculateFoldingTextRange(callExpression, document),
       group, // FoldingGroup.newGroup("Block comment " + comment.getTextRange().toString()),

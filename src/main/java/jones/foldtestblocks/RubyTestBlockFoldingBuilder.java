@@ -3,7 +3,6 @@ package jones.foldtestblocks;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
-import com.intellij.lang.folding.NamedFoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -77,8 +76,8 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
   }
 
   @NotNull
-  private NamedFoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall, @NotNull Document document) {
-    return new NamedFoldingDescriptor(
+  private FoldingDescriptor createFoldingDescriptor(@NotNull RBlockCall blockCall, @NotNull Document document) {
+    return new FoldingDescriptor(
       blockCall.getNode(),
       calculateFoldingTextRange(blockCall, document),
       null,
