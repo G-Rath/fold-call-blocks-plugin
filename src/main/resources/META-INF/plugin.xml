@@ -14,6 +14,8 @@
     <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
 
     <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyTestBlockFoldingBuilder" />
+
+    <projectService serviceImplementation="jones.foldtestblocks.BlockMatchersManager" />
   </extensions>
 
   <actions />
