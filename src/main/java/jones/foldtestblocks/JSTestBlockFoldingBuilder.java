@@ -7,28 +7,22 @@ import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSExpressionStatement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
+import jones.foldtestblocks.config.BlockMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.List;
 
 // todo: should we be extending FoldingBuilderEx instead?
 public class JSTestBlockFoldingBuilder implements FoldingBuilder {
-  private static final Logger LOG = Logger.getInstance(JSTestBlockFoldingBuilder.class);
-  private static final String[] testBlockNames = {
-    "describe",
-    "test",
-    "it"
-  };
-
   @NotNull
   @Override
   public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
@@ -46,71 +40,79 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
     return (
       PsiTreeUtil.findChildrenOfType(nodePsi, JSCallExpression.class)
                  .stream()
-                 .filter(this::isTestBlockCallExpression)
-                 .filter(this::shouldFoldTestBlockCallExpression)
+                 .filter(this::shouldFoldBlock)
                  .map(callExpression -> createFoldingDescriptor(callExpression, document))
                  .toArray(FoldingDescriptor[]::new)
     );
   }
 
   /**
-   * Checks if the given {@code expression} is a {@code CallExpression} for a "test block".
+   * Checks if the given {@code expression} is "supported", by comparing it against the configured {@code BlockMatcher}s.
    * <p>
-   * A "test block" call expression is one whose text is in the list of {@code testBlockNames}.
+   * Only {@code expression}s that are instances of {@code JSCallExpression} can be supported blocks,
+   * but not all {@code JSCallExpression}s are supported blocks.
    *
    * @param expression the expression to check
    *
-   * @return {@code true} if the given {@code expression} is for a "test block"; otherwise {@code false}
+   * @return {@code true} if the given {@code expression} is considered "supported"; otherwise {@code false}
    */
-  private boolean isTestBlockCallExpression(@Nullable JSExpression expression) {
+  private boolean isSupportedBlock(@Nullable JSExpression expression) {
     if(expression instanceof JSCallExpression) {
-      return isTestBlockCallExpression((JSCallExpression) expression);
+      return shouldFoldBlock((JSCallExpression) expression);
     }
 
     return false;
   }
 
+  private List<BlockMatcher> listBlockMatchers(Project project) {
+    return BlockMatchersManager.getInstance(project).getRules();
+  }
+
   /**
-   * Checks if the given {@code callExpression} is for a "test block".
+   * Finds the first matching {@code BlockMatcher} for the given {@code callExpression}
    * <p>
-   * A "test block" call expression is one whose text is in the list of {@code testBlockNames}.
+   * If no matchers match, {@code null} is returned instead.
    *
-   * @param callExpression the call expression to check
+   * @param callExpression the call expression to find a matching {@code BlockMatcher} for
    *
-   * @return {@code true} if the given {@code callExpression} is for a "test block"; otherwise {@code false}
+   * @return the first {@code TestBlockRule} that matches the given {@code callExpression} if any;
+   *   otherwise {@code null}
    */
-  private boolean isTestBlockCallExpression(@NotNull JSCallExpression callExpression) {
+  @Nullable
+  private BlockMatcher findMatcherForBlock(JSCallExpression callExpression) {
+    List<BlockMatcher> blockMatchers = listBlockMatchers(callExpression.getProject());
+
     JSExpression methodExpression = callExpression.getMethodExpression();
 
     if(methodExpression == null) {
+      throw new UnsupportedOperationException();
+    }
+
+    return blockMatchers
+             .stream()
+             .filter(blockMatcher -> blockMatcher.getBlockIdentifier().equals(methodExpression.getText()))
+             .findFirst().orElse(null);
+  }
+
+  /**
+   * Checks if the given {@code callExpression} should be folded
+   *
+   * @param callExpression the call expression to check
+   *
+   * @return {@code true} if the given {@code callExpression} should be folded; otherwise {@code false}
+   */
+  private boolean shouldFoldBlock(@NotNull JSCallExpression callExpression) {
+    JSExpression methodExpression = callExpression.getMethodExpression();
+
+    if(methodExpression == null || isTopMostCallExpression(callExpression)) {
       return false;
     }
 
-    return Arrays.asList(JSTestBlockFoldingBuilder.testBlockNames).contains(methodExpression.getText());
+    return findMatcherForBlock(callExpression) != null;
   }
 
   /**
-   * Checks if the given {@code testBlockCallExp} should be folded.
-   * <p>
-   * Test block call expressions should be folded unless they're at the top of the tree.
-   *
-   * @param testBlockCallExp the call expression block to check
-   *
-   * @return {@code true} if the given {@code testBlockCallExp} should be folded; otherwise {@code false}
-   */
-  private boolean shouldFoldTestBlockCallExpression(@NotNull JSCallExpression testBlockCallExp) {
-    /*
-      if "fold top level blocks" is false
-        then fold testBlockCallExp if it's not a top most call expression
-
-      > return foldTopLevelBlocks || !isTopMostCallExpression(testBlockCallExp)
-    */
-
-    return !isTopMostCallExpression(testBlockCallExp);
-  }
-
-  /**
-   * Checks if the given {@code callExpression} is th e top most call expression,
+   * Checks if the given {@code callExpression} is the top most call expression,
    * by checking if it's parents parent is an instance of {@code PsiFile}.
    *
    * @param callExpression the expression to check
@@ -137,14 +139,16 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
   }
 
   /**
-   * Finds the immediate next sibling of the given `callExpression` that is considered a test block, ignoring whitespace blocks.
+   * Finds the immediate next sibling of the given {@code callExpression} that is considered to be a supported block.
+   * <p>
+   * When searching for such blocks, whitespace blocks are ignored.
    *
    * @param callExpression the call expression whose next sibling to find
    *
-   * @return the next `JSCallExpression` considered to be a test block, or `null` if there isn't one
+   * @return the next {@code JSCallExpression} considered to be a supported block, or {@code null} if there isn't one
    */
   @Nullable
-  private JSCallExpression findImmediateNextTestBlockSibling(@NotNull JSCallExpression callExpression) {
+  private JSCallExpression findImmediateNextSupportedBlockSibling(@NotNull JSCallExpression callExpression) {
     for(PsiElement sibling = callExpression.getParent().getNextSibling(); sibling != null; sibling = sibling.getNextSibling()) {
       if(sibling instanceof PsiWhiteSpace) {
         continue; // ignore whitespace
@@ -156,7 +160,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
 
       JSExpression expression = ((JSExpressionStatement) sibling).getExpression();
 
-      if(isTestBlockCallExpression(expression)) {
+      if(isSupportedBlock(expression)) {
         return (JSCallExpression) expression;
       }
     }
@@ -175,7 +179,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
   private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression, @NotNull Document document) {
     TextRange range = callExpression.getParent().getTextRange();
 
-    JSCallExpression nextTestBlockSibling = findImmediateNextTestBlockSibling(callExpression);
+    JSCallExpression nextTestBlockSibling = findImmediateNextSupportedBlockSibling(callExpression);
 
     if(nextTestBlockSibling == null) {
       return range;
@@ -254,7 +258,7 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
     PsiElement psiElement = node.getPsi();
 
     if(psiElement instanceof JSCallExpression) {
-      return shouldFoldTestBlockCallExpression((JSCallExpression) psiElement);
+      return shouldFoldBlock((JSCallExpression) psiElement);
     }
 
     return true;
