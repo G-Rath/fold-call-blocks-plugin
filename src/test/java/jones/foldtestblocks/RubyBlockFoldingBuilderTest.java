@@ -2,7 +2,7 @@ package jones.foldtestblocks;
 
 import org.jetbrains.annotations.NotNull;
 
-public class RubyBlockFoldingBuilderTest extends BaseTestBlockFoldingBuilderTest {
+public class RubyBlockFoldingBuilderTest extends BaseBlockFoldingBuilderTest {
   @NotNull
   protected String getRootTestDataFolder() {
     return "ruby";

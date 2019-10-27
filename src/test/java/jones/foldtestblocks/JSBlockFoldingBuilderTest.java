@@ -2,7 +2,7 @@ package jones.foldtestblocks;
 
 import org.jetbrains.annotations.NotNull;
 
-public class JSBlockFoldingBuilderTest extends BaseTestBlockFoldingBuilderTest {
+public class JSBlockFoldingBuilderTest extends BaseBlockFoldingBuilderTest {
   @NotNull
   protected String getRootTestDataFolder() {
     return "js";
