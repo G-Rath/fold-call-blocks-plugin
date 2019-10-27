@@ -243,14 +243,6 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
     return textValue;
   }
 
-  private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range) {
-    /*
-    TextRange range = expressionParent.getTextRange();
-    TextRange textRange = new TextRange(findOffsetOfLineForTextRange(document, range), range.getEndOffset());
-     */
-    return document.getLineStartOffset(document.getLineNumber(range.getStartOffset()));
-  }
-
   @Nullable
   @Override
   public String getPlaceholderText(@NotNull ASTNode node) {
