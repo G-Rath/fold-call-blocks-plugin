@@ -102,6 +102,10 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
    * @return {@code true} if the given {@code callExpression} should be folded; otherwise {@code false}
    */
   private boolean shouldFoldBlock(@NotNull JSCallExpression callExpression) {
+    if(callExpression.getArguments().length == 0) {
+      return false;
+    }
+
     JSExpression methodExpression = callExpression.getMethodExpression();
 
     if(methodExpression == null || isTopMostCallExpression(callExpression)) {
