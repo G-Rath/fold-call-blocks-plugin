@@ -215,19 +215,20 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
    *
    * @return the placeholder text to use when folding the given {@code callExpression}
    */
+  @NotNull
   private String buildPlaceholderText(@NotNull JSCallExpression callExpression) {
     JSExpression[] callExpressionArguments = callExpression.getArguments();
-    JSExpression firstCallArgument = null;
 
-    if(callExpressionArguments.length > 0) {
-      firstCallArgument = callExpressionArguments[0];
+    if(callExpressionArguments.length == 0) {
+      return "<UNABLE TO BUILD PLACEHOLDER TEXT>";
     }
 
-    if(!(firstCallArgument instanceof JSLiteralExpression)) {
-      return callExpression.getText();
+    if(!(callExpressionArguments[0] instanceof JSLiteralExpression)) {
+      return callExpressionArguments[0].getText();
     }
 
-    String stringValue = ((JSLiteralExpression) firstCallArgument).getStringValue();
+    JSLiteralExpression firstCallArgument = ((JSLiteralExpression) callExpressionArguments[0]);
+    String stringValue = firstCallArgument.getStringValue();
 
     if(stringValue != null) {
       return stringValue;
@@ -235,7 +236,11 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
 
     String textValue = firstCallArgument.getText();
 
-    return textValue.substring(1, textValue.length() - 1);
+    if(firstCallArgument.isQuotedLiteral()) {
+      return textValue.substring(1, textValue.length() - 1);
+    }
+
+    return textValue;
   }
 
   private int findOffsetOfLineForTextRange(@NotNull Document document, @NotNull TextRange range) {
