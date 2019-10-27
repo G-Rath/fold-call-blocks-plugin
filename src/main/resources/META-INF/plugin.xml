@@ -13,7 +13,7 @@
     <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
     <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
 
-    <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyTestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyBlockFoldingBuilder" />
 
     <projectConfigurable instance="jones.foldtestblocks.config.ConfigForm" />
     <projectService serviceImplementation="jones.foldtestblocks.BlockMatchersManager" />

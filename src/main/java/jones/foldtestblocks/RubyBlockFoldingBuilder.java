@@ -20,7 +20,7 @@ import org.jetbrains.plugins.ruby.ruby.lang.psi.iterators.RBlockCall;
 import java.util.Arrays;
 
 // todo: should we be extending FoldingBuilderEx instead?
-public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
+public class RubyBlockFoldingBuilder implements FoldingBuilder {
   private static final String[] testBlockCommands = {
     "describe",
     "context",
@@ -53,7 +53,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
       return false;
     }
 
-    return Arrays.asList(RubyTestBlockFoldingBuilder.testBlockCommands).contains(blockCall.getCommand());
+    return Arrays.asList(RubyBlockFoldingBuilder.testBlockCommands).contains(blockCall.getCommand());
   }
 
   @NotNull
