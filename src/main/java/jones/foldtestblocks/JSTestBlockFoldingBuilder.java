@@ -27,15 +27,6 @@ public class JSTestBlockFoldingBuilder implements FoldingBuilder {
   @Override
   public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {
     PsiElement nodePsi = node.getPsi();
-//    PsiElement nodePsiNextSibling = nodePsi.getNextSibling();
-//
-//    if(nodePsiNextSibling instanceof JSCallExpression) {
-//      JSCallExpression callExpression = (JSCallExpression) nodePsiNextSibling;
-//
-//      if(isTestBlockCallExpression(callExpression) && shouldFoldTestBlockCallExpression(callExpression)) {
-//        return new FoldingDescriptor[]{ createFoldingDescriptor(document, callExpression) };
-//      }
-//    }
 
     return (
       PsiTreeUtil.findChildrenOfType(nodePsi, JSCallExpression.class)
