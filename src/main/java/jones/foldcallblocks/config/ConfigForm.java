@@ -1,4 +1,4 @@
-package jones.foldtestblocks.config;
+package jones.foldcallblocks.config;
 
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
@@ -22,13 +22,13 @@ public class ConfigForm implements SearchableConfigurable {
   @NotNull
   @Override
   public String getId() {
-    return "jones.foldtestblocks.fold-test-blocks";
+    return "jones.foldcallblocks.fold-call-blocks";
   }
 
   @Nls(capitalization = Nls.Capitalization.Title)
   @Override
   public String getDisplayName() {
-    return "Fold Custom Blocks";
+    return "Fold Call Blocks";
   }
 
   @Nullable

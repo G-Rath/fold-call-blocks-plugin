@@ -1,4 +1,4 @@
-package jones.foldtestblocks;
+package jones.foldcallblocks;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;

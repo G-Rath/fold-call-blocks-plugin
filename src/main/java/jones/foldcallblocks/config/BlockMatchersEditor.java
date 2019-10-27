@@ -1,10 +1,10 @@
-package jones.foldtestblocks.config;
+package jones.foldcallblocks.config;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.CollectionItemEditor;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.table.TableModelEditor;
-import jones.foldtestblocks.BlockMatchersManager;
+import jones.foldcallblocks.BlockMatchersManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

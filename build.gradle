@@ -2,7 +2,7 @@ plugins {
   id 'org.jetbrains.intellij' version '0.4.9'
 }
 
-group 'jones.foldtestblocks'
+group 'jones.foldcallblocks'
 version '0.0.0'
 
 apply plugin: 'org.jetbrains.intellij'
@@ -20,7 +20,11 @@ intellij {
 }
 patchPluginXml {
   pluginDescription """
-    This is a plugin that lets you fold test blocks in WebStorm, such as `it` & `describe`.
+    This plugin lets you fold custom call blocks, computing the folding placeholder
+    based off the first argument of said call blocks.
+    
+    This is particularly useful for tests, as it lets you fold test functions
+    using their titles as the placeholder text.
     <p>
     Icons made by <a href="https://www.flaticon.com/authors/vaadin" title="Vaadin">Vaadin</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
   """

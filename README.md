@@ -1,7 +1,7 @@
-# fold-test-blocks plugin
+# fold-call-blocks plugin
 
-WebStorm plugin that lets you fold test call blocks like region tags,
-letting you easily fold them, and remain focused on what you're working on:
+IntelliJ plugin that lets you fold call blocks like region tags,
+using the first argument of said call blocks as the placeholder text:
 
 ```
 const fn = <T>(p: T) => p;

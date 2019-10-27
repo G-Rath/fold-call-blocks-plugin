@@ -1,6 +1,6 @@
 <idea-plugin>
-  <id>jones.foldtestblocks.fold-test-blocks</id>
-  <name>Fold Test Blocks</name>
+  <id>jones.foldcallblocks.fold-call-blocks</id>
+  <name>Fold Call Blocks</name>
   <vendor>Gareth Jones</vendor>
 
   <depends>com.intellij.modules.lang</depends>
@@ -8,15 +8,15 @@
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
-    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
 
-    <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyBlockFoldingBuilder" />
+    <lang.foldingBuilder language="ruby" implementationClass="jones.foldcallblocks.RubyBlockFoldingBuilder" />
 
-    <projectConfigurable instance="jones.foldtestblocks.config.ConfigForm" />
-    <projectService serviceImplementation="jones.foldtestblocks.BlockMatchersManager" />
+    <projectConfigurable instance="jones.foldcallblocks.config.ConfigForm" />
+    <projectService serviceImplementation="jones.foldcallblocks.BlockMatchersManager" />
   </extensions>
 
   <actions />

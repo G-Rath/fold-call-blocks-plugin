@@ -1,4 +1,4 @@
-package jones.foldtestblocks.config;
+package jones.foldcallblocks.config;
 
 public class BlockMatcher {
   private String blockIdentifier;

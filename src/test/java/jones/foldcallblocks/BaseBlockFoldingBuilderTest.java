@@ -1,4 +1,4 @@
-package jones.foldtestblocks;
+package jones.foldcallblocks;
 
 import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package jones.foldtestblocks;
+package jones.foldcallblocks;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
@@ -6,7 +6,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SimpleModificationTracker;
-import jones.foldtestblocks.config.BlockMatcher;
+import jones.foldcallblocks.config.BlockMatcher;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
