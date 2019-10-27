@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 // todo: should we be extending FoldingBuilderEx instead?
 public class JSBlockFoldingBuilder implements FoldingBuilder {
@@ -125,11 +126,22 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
 
     FoldingGroup group = FoldingGroup.newGroup("test-block");
 
+    BlockMatcher matcherForBlock = Objects.requireNonNull(
+      findMatcherForBlock(callExpression),
+      "A folding descriptor should not be constructed for a JSCallExpression without a BlockMatcher!"
+    );
+
+    String placeholderText = buildPlaceholderText(callExpression);
+
+    if(matcherForBlock.isPrefixWhenFolding()) {
+      placeholderText = matcherForBlock.getBlockIdentifier() + " " + placeholderText;
+    }
+
     return new FoldingDescriptor(
       expressionParent.getNode(),
       calculateFoldingTextRange(callExpression, document),
       group, // FoldingGroup.newGroup("Block comment " + comment.getTextRange().toString()),
-      buildPlaceholderText(callExpression)
+      placeholderText
     );
   }
 
