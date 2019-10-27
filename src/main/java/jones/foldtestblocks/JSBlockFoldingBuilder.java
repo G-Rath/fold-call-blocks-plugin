@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 // todo: should we be extending FoldingBuilderEx instead?
-public class JSTestBlockFoldingBuilder implements FoldingBuilder {
+public class JSBlockFoldingBuilder implements FoldingBuilder {
   @NotNull
   @Override
   public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {

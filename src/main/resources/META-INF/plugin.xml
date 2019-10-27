@@ -8,10 +8,10 @@
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
-    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSTestBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
+    <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldtestblocks.JSBlockFoldingBuilder" />
 
     <lang.foldingBuilder language="ruby" implementationClass="jones.foldtestblocks.RubyTestBlockFoldingBuilder" />
 
