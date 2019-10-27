@@ -35,44 +35,25 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
     return (
       PsiTreeUtil.findChildrenOfType(nodePsi, RBlockCall.class)
                  .stream()
-                 .filter(this::isTestBlockCall)
-                 .filter(this::shouldFoldTestBlockCall)
+                 .filter(this::shouldFoldBlock)
                  .map(blockCall -> createFoldingDescriptor(blockCall, document))
                  .toArray(FoldingDescriptor[]::new)
     );
   }
 
   /**
-   * Checks if the given {@code blockCall} is for a "test block".
-   * <p>
-   * A "test block" call is one whose command is in the list of {@code testBlockCommands}.
+   * Checks if the given {@code blockCall} should be folded
    *
    * @param blockCall the block call to check
    *
-   * @return {@code true} if the given {@code blockCall} is for a "test block"; otherwise {@code false}
+   * @return {@code true} if the given {@code callExpression} should be folded; otherwise {@code false}
    */
-  private boolean isTestBlockCall(@NotNull RBlockCall blockCall) {
+  private boolean shouldFoldBlock(@NotNull RBlockCall blockCall) {
+    if(blockCall.getArguments().isEmpty()) {
+      return false;
+    }
+
     return Arrays.asList(RubyTestBlockFoldingBuilder.testBlockCommands).contains(blockCall.getCommand());
-  }
-
-  /**
-   * Checks if the given {@code blockCall} should be folded.
-   * <p>
-   * Test block call expressions should be folded unless they're at the top of the tree.
-   *
-   * @param blockCall the call expression block to check
-   *
-   * @return {@code true} if the given {@code blockCall} should be folded; otherwise {@code false}
-   */
-  private boolean shouldFoldTestBlockCall(@NotNull RBlockCall blockCall) {
-    /*
-      if "fold top level blocks" is false
-        then fold blockCall if it's not a top most call expression
-
-      > return foldTopLevelBlocks || !isTopMostCallExpression(blockCall)
-    */
-
-    return true;
   }
 
   @NotNull
@@ -127,7 +108,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
         return null;
       }
 
-      if(isTestBlockCall((RBlockCall) sibling)) {
+      if(shouldFoldBlock((RBlockCall) sibling)) {
         return (RBlockCall) sibling;
       }
     }
@@ -197,7 +178,7 @@ public class RubyTestBlockFoldingBuilder implements FoldingBuilder {
     PsiElement psiElement = node.getPsi();
 
     if(psiElement instanceof RBlockCall) {
-      return shouldFoldTestBlockCall((RBlockCall) psiElement);
+      return shouldFoldBlock((RBlockCall) psiElement);
     }
 
     return true;
