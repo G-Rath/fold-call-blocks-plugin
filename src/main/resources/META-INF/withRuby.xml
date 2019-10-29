@@ -1,0 +1,5 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.intellij">
+    <lang.foldingBuilder language="ruby" implementationClass="jones.foldcallblocks.RubyBlockFoldingBuilder" />
+  </extensions>
+</idea-plugin>
