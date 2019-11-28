@@ -3,33 +3,32 @@ plugins {
 }
 
 group 'jones.foldcallblocks'
-version '0.0.1'
+version '0.0.2'
 
 apply plugin: 'org.jetbrains.intellij'
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
   type = 'IU'
-  version = '2019.2'
+  version = '2019.3'
   plugins = [
     'JavaScriptLanguage',
     'CSS',
     'yaml',
-    'org.jetbrains.plugins.ruby:2019.2.20190718',
+    'org.jetbrains.plugins.ruby:193.5233.57',
   ]
 }
 patchPluginXml {
   pluginDescription """
     This plugin lets you fold custom call blocks, computing the folding placeholder
     based off the first argument of said call blocks.
-    
+
     This is particularly useful for tests, as it lets you fold test functions
     using their titles as the placeholder text.
     <p>
     Icons made by <a href="https://www.flaticon.com/authors/vaadin" title="Vaadin">Vaadin</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
   """
   changeNotes """
-    0.0.1 - Marked language dependencies as optional
-    0.0.0 - Initial release.
+    0.0.2 - Support 2019.3
   """
 }
