@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-// todo: should we be extending FoldingBuilderEx instead?
 public class JSBlockFoldingBuilder implements FoldingBuilder {
   @NotNull
   @Override

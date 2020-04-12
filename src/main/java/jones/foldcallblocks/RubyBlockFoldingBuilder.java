@@ -19,7 +19,6 @@ import org.jetbrains.plugins.ruby.ruby.lang.psi.iterators.RBlockCall;
 
 import java.util.Arrays;
 
-// todo: should we be extending FoldingBuilderEx instead?
 public class RubyBlockFoldingBuilder implements FoldingBuilder {
   private static final String[] testBlockCommands = {
     "describe",
