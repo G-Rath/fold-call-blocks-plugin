@@ -1,6 +1,5 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="JSX Harmony" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
     <lang.foldingBuilder language="JavaScript" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
     <lang.foldingBuilder language="TypeScript" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
     <lang.foldingBuilder language="TypeScript JSX" implementationClass="jones.foldcallblocks.JSBlockFoldingBuilder" />
