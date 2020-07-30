@@ -138,7 +138,7 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
 
     return new FoldingDescriptor(
       expressionParent.getNode(),
-      calculateFoldingTextRange(callExpression, document),
+      calculateFoldingTextRange(callExpression, document, matcherForBlock.shouldAddNewline()),
       group, // FoldingGroup.newGroup("Block comment " + comment.getTextRange().toString()),
       placeholderText
     );
@@ -179,10 +179,13 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
    *
    * @param callExpression the `JSCallExpression` who's `TextRange` to calculate
    * @param document       the `document` the `callExpression` is in
+   * @param shouldAddNewline whether to add a newline between folding blocks
    *
    * @return the `TextRange` to fold over
    */
-  private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression, @NotNull Document document) {
+  private TextRange calculateFoldingTextRange(@NotNull JSCallExpression callExpression,
+                                              @NotNull Document document,
+                                              boolean shouldAddNewline) {
     TextRange range = callExpression.getParent().getTextRange();
 
     JSCallExpression nextTestBlockSibling = findImmediateNextSupportedBlockSibling(callExpression);
@@ -198,7 +201,8 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
     int nextTestBlockStartLineNum = document.getLineNumber(nextTestBlockStartOffset);
 
     // offset of the start of the line before the start of the next test block
-    int offsetOfLineBeforeNextTestBlock = document.getLineStartOffset(nextTestBlockStartLineNum - 1);
+    int newlineOffset = shouldAddNewline ? 2 : 1;
+    int offsetOfLineBeforeNextTestBlock = document.getLineStartOffset(nextTestBlockStartLineNum - newlineOffset);
 
     if(range.getEndOffset() > offsetOfLineBeforeNextTestBlock) {
       offsetOfLineBeforeNextTestBlock = range.getEndOffset();

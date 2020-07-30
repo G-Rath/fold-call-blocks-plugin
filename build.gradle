@@ -10,12 +10,12 @@ apply plugin: 'org.jetbrains.intellij'
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
   type = 'IU'
-  version = '2020.1'
+  version = 'LATEST-EAP-SNAPSHOT'
   plugins = [
     'JavaScriptLanguage',
     'CSS',
     'yaml',
-    'org.jetbrains.plugins.ruby:201.6668.113',
+    'org.jetbrains.plugins.ruby:202.6397.59',
   ]
 }
 patchPluginXml {

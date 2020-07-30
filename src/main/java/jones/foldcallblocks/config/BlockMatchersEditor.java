@@ -46,7 +46,25 @@ public class BlockMatchersEditor {
       rule.setPrefixWhenFolding(value);
     }
   };
-  private static final ColumnInfo[] COLUMNS = { COLUMN_INFO_BLOCK_IDENTIFIER, COLUMN_INFO_SHOULD_PREFIX };
+  private static final TableModelEditor.EditableColumnInfo<BlockMatcher, Boolean> COLUMN_INFO_NEW_LINE = new TableModelEditor.EditableColumnInfo<BlockMatcher, Boolean>(
+    "Add newline between foldings?"
+  ) {
+    @Override
+    public Class getColumnClass() {
+      return Boolean.class;
+    }
+
+    @Override
+    public Boolean valueOf(BlockMatcher rule) {
+      return rule.shouldAddNewline();
+    }
+
+    @Override
+    public void setValue(BlockMatcher rule, Boolean value) {
+      rule.setShouldAddNewline(value);
+    }
+  };
+  private static final ColumnInfo[] COLUMNS = { COLUMN_INFO_BLOCK_IDENTIFIER, COLUMN_INFO_SHOULD_PREFIX, COLUMN_INFO_NEW_LINE };
 
   private TableModelEditor<BlockMatcher> blockMatchersEditor;
   private JComponent blockMatchersTable;
