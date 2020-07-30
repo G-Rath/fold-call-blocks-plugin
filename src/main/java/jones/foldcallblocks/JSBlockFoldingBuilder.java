@@ -194,6 +194,14 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
       return range;
     }
 
+    // If the next block is requiring a newline, this block should behave as if it has addNewline enabled
+    BlockMatcher matcherForBlock = findMatcherForBlock(nextTestBlockSibling);
+    boolean shouldAddLineBefore = false;
+
+    if (matcherForBlock != null && matcherForBlock.shouldAddNewline()) {
+      shouldAddLineBefore = true;
+    }
+
     JSExpressionStatement nextTestBlockExpression = (JSExpressionStatement) nextTestBlockSibling.getParent();
 
     // line number that the *start* of the next test block is on
@@ -201,7 +209,7 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
     int nextTestBlockStartLineNum = document.getLineNumber(nextTestBlockStartOffset);
 
     // offset of the start of the line before the start of the next test block
-    int newlineOffset = shouldAddNewline ? 2 : 1;
+    int newlineOffset = (shouldAddNewline || shouldAddLineBefore) ? 2 : 1;
     int offsetOfLineBeforeNextTestBlock = document.getLineStartOffset(nextTestBlockStartLineNum - newlineOffset);
 
     if(range.getEndOffset() > offsetOfLineBeforeNextTestBlock) {

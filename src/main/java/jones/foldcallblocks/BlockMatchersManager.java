@@ -39,7 +39,7 @@ public class BlockMatchersManager extends SimpleModificationTracker implements P
       )
             .flatMap(o -> o)
             .flatMap(s -> Stream.of(s, s.concat(".each")))
-            .map(block -> new BlockMatcher(block, !block.contains("describe")))
+            .map(block -> new BlockMatcher(block, !block.contains("describe"), block.contains("describe")))
             .collect(Collectors.toList())
     );
   }
