@@ -138,7 +138,7 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
 
     return new FoldingDescriptor(
       expressionParent.getNode(),
-      calculateFoldingTextRange(callExpression, document, matcherForBlock.shouldAddNewline()),
+      calculateFoldingTextRange(callExpression, document, matcherForBlock.isShouldAddNewline()),
       group, // FoldingGroup.newGroup("Block comment " + comment.getTextRange().toString()),
       placeholderText
     );
@@ -198,7 +198,7 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
     BlockMatcher matcherForBlock = findMatcherForBlock(nextTestBlockSibling);
     boolean shouldAddLineBefore = false;
 
-    if (matcherForBlock != null && matcherForBlock.shouldAddNewline()) {
+    if (matcherForBlock != null && matcherForBlock.isShouldAddNewline()) {
       shouldAddLineBefore = true;
     }
 

@@ -8,7 +8,7 @@
   <depends optional="true" config-file="withRuby.xml">org.jetbrains.plugins.ruby</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectConfigurable instance="jones.foldcallblocks.config.ConfigForm" />
+    <projectConfigurable instance="jones.foldcallblocks.config.ConfigForm" dynamic="true" groupId="editor" />
     <projectService serviceImplementation="jones.foldcallblocks.BlockMatchersManager" />
   </extensions>
 

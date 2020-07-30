@@ -56,7 +56,7 @@ public class BlockMatchersEditor {
 
     @Override
     public Boolean valueOf(BlockMatcher rule) {
-      return rule.shouldAddNewline();
+      return rule.isShouldAddNewline();
     }
 
     @Override

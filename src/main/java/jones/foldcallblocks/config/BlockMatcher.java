@@ -11,7 +11,7 @@ public class BlockMatcher {
   }
 
   public BlockMatcher(BlockMatcher existingRule) {
-    this(existingRule.blockIdentifier, existingRule.prefixWhenFolding, false);
+    this(existingRule.blockIdentifier, existingRule.prefixWhenFolding, existingRule.shouldAddNewline);
   }
 
   public BlockMatcher(String blockIdentifier, boolean prefixWhenFolding) {
@@ -40,7 +40,7 @@ public class BlockMatcher {
     this.prefixWhenFolding = prefixWhenFolding;
   }
 
-  public boolean shouldAddNewline() {
+  public boolean isShouldAddNewline() {
     return shouldAddNewline;
   }
 
