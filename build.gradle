@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'jones.foldcallblocks'
-version '0.0.5'
+version '0.0.6'
 
 apply plugin: 'org.jetbrains.intellij'
 //compile 'org.jetbrains:annotations:19.0.0'
@@ -31,6 +31,6 @@ patchPluginXml {
     Icons made by <a href="https://www.flaticon.com/authors/vaadin" title="Vaadin">Vaadin</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
   """
   changeNotes """
-    0.0.5 - Relax allowed IDE versions, to support latest EAP builds
+    0.0.6 - Support folding calls-on-calls and tagged template literal calls
   """
 }
