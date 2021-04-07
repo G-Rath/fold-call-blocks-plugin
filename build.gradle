@@ -3,20 +3,22 @@ plugins {
 }
 
 group 'jones.foldcallblocks'
-version '0.0.4'
+version '0.0.5'
 
 apply plugin: 'org.jetbrains.intellij'
+//compile 'org.jetbrains:annotations:19.0.0'
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
   type = 'IU'
-  version = '2020.1'
+  version = '202.6397.94'
   plugins = [
     'JavaScriptLanguage',
     'CSS',
     'yaml',
-    'org.jetbrains.plugins.ruby:201.6668.113',
+    'org.jetbrains.plugins.ruby:202.6397.59',
   ]
+  updateSinceUntilBuild = false
 }
 patchPluginXml {
   pluginDescription """
@@ -29,6 +31,6 @@ patchPluginXml {
     Icons made by <a href="https://www.flaticon.com/authors/vaadin" title="Vaadin">Vaadin</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
   """
   changeNotes """
-    0.0.4 - Don't override the folding builder for JSX Harmony (restores folding in React & Flow projects)
+    0.0.5 - Relax allowed IDE versions, to support latest EAP builds
   """
 }

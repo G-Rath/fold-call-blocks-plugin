@@ -2,6 +2,7 @@
   <id>jones.foldcallblocks.fold-call-blocks</id>
   <name>Fold Call Blocks</name>
   <vendor>Gareth Jones</vendor>
+  <idea-version since-build="193"/>
 
   <depends>com.intellij.modules.lang</depends>
   <depends optional="true" config-file="withJavaScript.xml">JavaScript</depends>
