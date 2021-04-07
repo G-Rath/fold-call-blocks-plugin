@@ -7,6 +7,7 @@ import com.intellij.lang.javascript.psi.JSCallExpression;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSExpressionStatement;
 import com.intellij.lang.javascript.psi.JSLiteralExpression;
+import com.intellij.lang.javascript.psi.ecma6.ES6TaggedTemplateExpression;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.openapi.project.Project;
@@ -75,13 +76,25 @@ public class JSBlockFoldingBuilder implements FoldingBuilder {
 
     JSExpression methodExpression = callExpression.getMethodExpression();
 
+    // support it.each()() calls
+    if(methodExpression instanceof JSCallExpression) {
+      methodExpression = ((JSCallExpression) methodExpression).getMethodExpression();
+    }
+
+    // support it.each``() calls
+    if(methodExpression instanceof ES6TaggedTemplateExpression) {
+      methodExpression = ((ES6TaggedTemplateExpression) methodExpression).getMethodExpression();
+    }
+
     if(methodExpression == null) {
       throw new UnsupportedOperationException();
     }
 
+    JSExpression finalMethodExpression = methodExpression;
+
     return blockMatchers
              .stream()
-             .filter(blockMatcher -> blockMatcher.getBlockIdentifier().equals(methodExpression.getText()))
+             .filter(blockMatcher -> blockMatcher.getBlockIdentifier().equals(finalMethodExpression.getText()))
              .findFirst().orElse(null);
   }
 
